@@ -40,6 +40,7 @@ Compared to other tools, the difficulty of the tool is very low. In just a few m
    head-t
    ```
 5. Drop the `class.txt` file into it.
+
    ![](.images/c6044be9.png)
 6. Now you can label the object.
 
