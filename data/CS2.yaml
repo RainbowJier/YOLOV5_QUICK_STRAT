@@ -1,0 +1,16 @@
+# Train/val/test sets as 140pic) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+
+train: D:/GithubProjects/Ai_Projects/DataSource/cs2/tagged/auto/xiaozhen_shaer_huangmo/images/train # train images (relative to 'path') 128 images
+val: D:/GithubProjects/Ai_Projects/DataSource/cs2/tagged/auto/xiaozhen_shaer_huangmo/images/val # val images (relative to 'path') 128 images
+
+nc: 4
+
+names: ['ct', 'head-ct', 't', 'head-t']
+
+# Classes
+#names:
+#  0 : t_body
+#  1 : t_head
+#  2 : ct_body
+#  3 : ct_head
+#
