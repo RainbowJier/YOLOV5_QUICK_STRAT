@@ -75,6 +75,7 @@ def run(
     conf_thres=0.25,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
     max_det=1000,  # maximum detections per image
+    draw_frame = True,
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
     view_img=False,  # show results
     save_txt=False,  # save results to *.txt
@@ -109,6 +110,9 @@ def run(
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
+
+    (save_dir / "tagged" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
+    (save_dir / "untagged" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     # Load model
     device = select_device(device)
@@ -184,13 +188,16 @@ def run(
                 p, im0, frame = path, im0s.copy(), getattr(dataset, "frame", 0)
 
             p = Path(p)  # to Path
-            save_path = str(save_dir / p.name)  # im.jpg
+
             txt_path = str(save_dir / "labels" / p.stem) + ("" if dataset.mode == "image" else f"_{frame}")  # im.txt
             s += "%gx%g " % im.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+
             if len(det):
+                save_path = str(save_dir / "tagged" / p.name)  # im.jpg
+
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
 
@@ -218,24 +225,27 @@ def run(
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
-                        annotator.box_label(xyxy, label, color=colors(c, True))
+                        # Draw detection frame
+                        if(draw_frame):
+                            annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / "crops" / names[c] / f"{p.stem}.jpg", BGR=True)
+            else:
+                save_path = str(save_dir/ 'untagged/{}'.format(p.name))  # im.jpg
 
-            # Stream results
+
             im0 = annotator.result()
             if view_img:
                 if platform.system() == "Linux" and p not in windows:
                     windows.append(p)
                     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-                cv2.imshow(str(p), im0)
-                cv2.waitKey(1)  # 1 millisecond
-
-            # Save results (image with detections)
+                    cv2.imshow(str(p), im0)
+                    cv2.waitKey(1)  # 1 millisecond
             if save_img:
                 if dataset.mode == "image":
-                    cv2.imwrite(save_path, im0)
+                    cv2.imwrite(save_path , im0)
+
                 else:  # 'video' or 'stream'
                     if vid_path[i] != save_path:  # new video
                         vid_path[i] = save_path
@@ -250,6 +260,8 @@ def run(
                         save_path = str(Path(save_path).with_suffix(".mp4"))  # force *.mp4 suffix on results videos
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
                     vid_writer[i].write(im0)
+
+
 
         # Print time (inference-only)
         LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
@@ -267,23 +279,26 @@ def run(
 def parse_opt():
     """Parses command-line arguments for YOLOv5 detection, setting inference options and model configurations."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "weights/best.onnx", help="model path or triton URL")
-    parser.add_argument("--source", type=str, default= "C:/Users/30218\Desktop/imags", help="file/dir/URL/glob/screen/0(webcam)")
+    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "weights/10w/320-FP16/10w-v5.engine", help="model path or triton URL")
+    parser.add_argument("--source", type=str, default= "D:\GithubProjects\Ai_Projects\DataSource\cs2/xiaozhen/xiaozhen2\images/train", help="file/dir/URL/glob/screen/0(webcam)")
     parser.add_argument("--data", type=str, default=ROOT / "data/CS2.yaml", help="(optional) dataset.yaml path")
     parser.add_argument("--save-txt", default=True, action="store_true", help="save results to *.txt")
-    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
+    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[320], help="inference size h,w")
+    parser.add_argument("--conf-thres", type=float, default=0.4, help="confidence threshold")
 
+    # Add
+    parser.add_argument("--draw-frame",default=True, action="store_true", help="draw frames")
 
-
-    parser.add_argument("--conf-thres", type=float, default=0.25, help="confidence threshold")
+    parser.add_argument("--exist-ok",  action="store_true",help="existing project/name ok, do not increment")
+    parser.add_argument("--nosave",default=False, action="store_true", help="do not save images/videos")
+    parser.add_argument("--save-crop",default=False, action="store_true", help="save cropped prediction boxes，保存截图")
+    parser.add_argument("--view-img", default=False, action="store_true", help="show results")
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
     parser.add_argument("--max-det", type=int, default=1000, help="maximum detections per image")
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
-    parser.add_argument("--view-img", action="store_true", help="show results")
     parser.add_argument("--save-csv", action="store_true", help="save results in CSV format")
     parser.add_argument("--save-conf", action="store_true", help="save confidences in --save-txt labels")
-    parser.add_argument("--save-crop", action="store_true", help="save cropped prediction boxes")
-    parser.add_argument("--nosave", action="store_true", help="do not save images/videos")
+
     parser.add_argument("--classes", nargs="+", type=int, help="filter by class: --classes 0, or --classes 0 2 3")
     parser.add_argument("--agnostic-nms", action="store_true", help="class-agnostic NMS")
     parser.add_argument("--augment", action="store_true", help="augmented inference")
@@ -291,7 +306,7 @@ def parse_opt():
     parser.add_argument("--update", action="store_true", help="update all models")
     parser.add_argument("--project", default=ROOT / "runs/detect", help="save results to project/name")
     parser.add_argument("--name", default="exp", help="save results to project/name")
-    parser.add_argument("--exist-ok", action="store_true", help="existing project/name ok, do not increment")
+
     parser.add_argument("--line-thickness", default=3, type=int, help="bounding box thickness (pixels)")
     parser.add_argument("--hide-labels", default=False, action="store_true", help="hide labels")
     parser.add_argument("--hide-conf", default=False, action="store_true", help="hide confidences")

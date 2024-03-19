@@ -898,7 +898,7 @@ def parse_opt(known=False):
 
     parser.add_argument("--data", type=str, default=ROOT / "data/CS2.yaml", help="dataset.yaml path")
     parser.add_argument("--weights", type=str, default=ROOT / "weights/10w/10w-v5.pt", help="initial weights path")
-    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[320, 320], help="image (h, w)")
+    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640, 640], help="image (h, w)")
     parser.add_argument("--batch-size", type=int, default=1, help="batch size")
     parser.add_argument("--half",default=True, action="store_true", help="FP16 half-precision export")
 
@@ -923,7 +923,7 @@ def parse_opt(known=False):
     parser.add_argument(
         "--include",
         nargs="+",
-        default=["engine"],
+        default=["onnx","engine"],
         help="torchscript, onnx, openvino, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle",
     )
     opt = parser.parse_known_args()[0] if known else parser.parse_args()

@@ -4,7 +4,7 @@
 2. [Training model](##Training model)
 3. [Automatically Label Dataset](##Automatically Label Dataset)
 4. [Model Conversion](##Model Conversion)
-5. [PT Convert to ENGINE](##PT Convert to ENGINE) 
+5. [PT Convert to ENGINE](##PT Convert to ENGINE)
 
 *** 
 
@@ -177,11 +177,26 @@ Note: You can pick a different YOLOv5 model size. TensorRT's power allows for la
 If you've followed these steps, you should be all set with TensorRT! ⚙️🚀
 
 
-
-
-
 *** 
 
+## 6. Improve detect.py 
+Modified content:
+1. Add the draw-frame parameter: Whether to draw a detection frame
+   ![img.png](img.png)
+   ![img_1.png](img_1.png)
+
+2. Modify the image save path to tagged and untagged. 
+   - make directory
+      ![img_2.png](img_2.png)
+   - tagged
+      ![img_3.png](img_3.png)
+   - untagged
+     ![img_4.png](img_4.png)
+3. Result
+   
+   ![img_5.png](img_5.png)
+
+***
 
 ## Reference
 1. https://blog.csdn.net/J_oshua/article/details/130017483
