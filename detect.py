@@ -279,9 +279,9 @@ def run(
 def parse_opt():
     """Parses command-line arguments for YOLOv5 detection, setting inference options and model configurations."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "weights/10w/320-FP16/10w-v5.engine", help="model path or triton URL")
-    parser.add_argument("--source", type=str, default= "D:\GithubProjects\Ai_Projects\DataSource\cs2/xiaozhen/xiaozhen2\images/train", help="file/dir/URL/glob/screen/0(webcam)")
-    parser.add_argument("--data", type=str, default=ROOT / "data/CS2.yaml", help="(optional) dataset.yaml path")
+    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "weights/sanjiaozhou/320-FP16/sjz_yolov5.engine", help="model path or triton URL")
+    parser.add_argument("--source", type=str, default= "C:\\Users\\30218\Desktop\hc3000+数据集和模型\hc\images\\val", help="file/dir/URL/glob/screen/0(webcam)")
+    parser.add_argument("--data", type=str, default=ROOT / "data/sjz.yaml", help="(optional) dataset.yaml path")
     parser.add_argument("--save-txt", default=True, action="store_true", help="save results to *.txt")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[320], help="inference size h,w")
     parser.add_argument("--conf-thres", type=float, default=0.4, help="confidence threshold")

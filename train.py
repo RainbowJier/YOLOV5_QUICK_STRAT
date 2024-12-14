@@ -522,7 +522,7 @@ def parse_opt(known=False):
     """Parses command-line arguments for YOLOv5 training, validation, and testing."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", type=str, default=ROOT / "yolov5m.pt", help="initial weights path")
-    parser.add_argument("--data", type=str, default=ROOT / "data/CS2.yaml", help="dataset.yaml path")
+    parser.add_argument("--data", type=str, default=ROOT / "data/sanjiaozhou.yaml", help="dataset.yaml path")
     parser.add_argument("--epochs", type=int, default=200, help="total training epochs")
     parser.add_argument("--batch-size", type=int, default=10, help="total batch size for all GPUs, -1 for autobatch")
     parser.add_argument("--imgsz", "--img", "--img-size", type=int, default=640, help="train, val image size (pixels)")

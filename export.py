@@ -592,7 +592,7 @@ def add_tflite_metadata(file, metadata, num_outputs):
     https://www.tensorflow.org/lite/models/convert/metadata
     """
     with contextlib.suppress(ImportError):
-        # check_requirements('tflite_support')
+        check_requirements('tflite_support')
         from tflite_support import flatbuffers
         from tflite_support import metadata as _metadata
         from tflite_support import metadata_schema_py_generated as _metadata_fb
@@ -896,12 +896,11 @@ def parse_opt(known=False):
     """Parses command-line arguments for YOLOv5 model export configurations, returning the parsed options."""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--data", type=str, default=ROOT / "data/CS2.yaml", help="dataset.yaml path")
-    parser.add_argument("--weights", type=str, default=ROOT / "weights/10w/10w-v5.pt", help="initial weights path")
-    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640, 640], help="image (h, w)")
+    parser.add_argument("--data", type=str, default=ROOT / "data/sjz.yaml", help="dataset.yaml path")
+    parser.add_argument("--weights", type=str, default=ROOT / "weights/sanjiaozhou/sjz_yolov5.pt", help="initial weights path")
+    parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[320, 320], help="image (h, w)")
     parser.add_argument("--batch-size", type=int, default=1, help="batch size")
     parser.add_argument("--half",default=True, action="store_true", help="FP16 half-precision export")
-
 
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,140,2,3 or cpu")
     parser.add_argument("--inplace", action="store_true", help="set YOLOv5 Detect() inplace=True")
@@ -923,7 +922,7 @@ def parse_opt(known=False):
     parser.add_argument(
         "--include",
         nargs="+",
-        default=["onnx","engine"],
+        default=["engine"],
         help="torchscript, onnx, openvino, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle",
     )
     opt = parser.parse_known_args()[0] if known else parser.parse_args()
